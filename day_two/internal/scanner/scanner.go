@@ -34,31 +34,56 @@ func FindSafeReports(list [][]int) int {
 	var safeReports int
 	for _, line := range list {
 
-		var prevNumber int = -1
-		var ascending bool = true
-		var descending bool = true
-		var isSafe bool = true
-		for _, num := range line {
-			if prevNumber != -1 {
-				ascending = num > prevNumber && ascending
-				descending = num < prevNumber && descending
-
-				isSafe = checkSafe(num, prevNumber, ascending, descending)
-			}
-
-			prevNumber = num
-			if !isSafe {
-				break
-			}
-		}
-
-		if isSafe {
+		if checkIfLineSafe(line) {
 			safeReports++
 		}
 	}
 	return safeReports
 }
 
+func FindSafeReportsPartTwo(list [][]int) int {
+
+	var safeReports int
+	for _, line := range list {
+
+		var isSafe bool = true
+		isSafe = loopThroughLine(line)
+
+		for i, _ := range line {
+			ret := make([]int, 0)
+			ret = append(ret, line[:i]...)
+			isSafe = isSafe || loopThroughLine(append(ret, line[i+1:]...))
+		}
+		if isSafe {
+			safeReports++
+		}
+
+	}
+	return safeReports
+}
+
+func loopThroughLine(line []int) bool {
+	var prevNumber int = -1
+	var ascending bool = true
+	var descending bool = true
+	var isSafe bool = true
+
+	for _, num := range line {
+		if prevNumber != -1 {
+			ascending = num > prevNumber && ascending
+			descending = num < prevNumber && descending
+
+			isSafe = checkSafe(num, prevNumber, ascending, descending)
+		}
+
+		prevNumber = num
+		if !isSafe {
+			return false
+		}
+	}
+
+	return isSafe
+}
 func checkSafe(num int, prevNumber int, descending bool, ascending bool) bool {
 	if abs(num-prevNumber) > 3 || abs(num-prevNumber) < 1 {
 		return false
@@ -71,4 +96,28 @@ func abs(x int) int {
 		return -x
 	}
 	return x
+}
+
+func checkIfLineSafe(line []int) bool {
+	var prevNumber int = -1
+	var ascending bool = true
+	var descending bool = true
+	var isSafe bool = true
+
+	for _, num := range line {
+		if prevNumber != -1 {
+			ascending = num > prevNumber && ascending
+			descending = num < prevNumber && descending
+
+			isSafe = checkSafe(num, prevNumber, ascending, descending)
+		}
+
+		prevNumber = num
+		if !isSafe {
+			break
+		}
+	}
+
+	return isSafe
+
 }

@@ -21,6 +21,9 @@ func main() {
 	outputList := scanner.ScanTextToInts(bufioScanner)
 
 	safeReports := scanner.FindSafeReports(outputList)
-	fmt.Print(safeReports)
+	fmt.Println(safeReports)
+
+	safeReportsWithRetry := scanner.FindSafeReportsPartTwo(outputList)
+	fmt.Println(safeReportsWithRetry)
 
 }
